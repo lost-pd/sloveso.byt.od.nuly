@@ -1,0 +1,365 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+#app{min-height:520px;display:flex;flex-direction:column}
+
+#screen-home{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;min-height:520px;padding:2rem}
+#screen-home h1{font-size:32px;font-weight:500}
+#screen-home h2{font-size:22px;font-weight:400;color:var(--color-text-secondary)}
+#screen-home button{width:240px;padding:15px 0;font-size:18px;font-weight:500;border-radius:var(--border-radius-lg);background:var(--color-background-primary);border:1.5px solid var(--color-border-secondary);cursor:pointer}
+#screen-home button:hover{background:var(--color-background-secondary)}
+
+#screen-train{display:none;flex-direction:column;min-height:520px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.hearts{font-size:22px;display:flex;gap:4px}
+.prog-wrap{flex:1;margin:0 14px;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:#1D9E75;border-radius:4px;transition:width .3s}
+#btn-repeat{background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 14px;font-size:14px;cursor:pointer;color:var(--color-text-secondary)}
+#btn-repeat:hover{background:var(--color-background-secondary)}
+
+.sentence-area{padding:28px 24px 0;display:flex;flex-direction:column;gap:0}
+
+.transl-btn-row{padding:10px 24px 0}
+#btn-transl{font-size:22px;font-weight:400;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;padding:0;text-align:left;font-family:var(--font-sans)}
+#btn-transl:hover{color:var(--color-text-primary)}
+#transl-text{font-size:22px;color:var(--color-text-secondary);font-style:italic;display:none;padding:10px 24px 0}
+
+.sentence-text{font-size:22px;line-height:2.4;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.inline-input-wrap{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+#ans-input{font-size:20px;font-family:var(--font-sans);padding:4px 10px;border:none;border-bottom:2px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);outline:none;width:120px;text-align:center;transition:border-color .2s,background .2s,border-radius .2s}
+#ans-input.ok{border-color:#1D9E75;background:#E1F5EE;border-radius:var(--border-radius-md)}
+#ans-input.err{border-color:#E24B4A;background:#FCEBEB;border-radius:var(--border-radius-md)}
+.verb-hint{font-size:16px;color:var(--color-text-secondary);white-space:nowrap}
+.hint-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:15px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);user-select:none;vertical-align:middle;white-space:nowrap;transition:background .15s}
+.hint-btn:hover{background:var(--color-background-secondary)}
+.hint-btn.open{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+
+.action-row{display:flex;align-items:center;gap:10px;padding:16px 24px 0}
+#btn-check{padding:9px 22px;font-size:16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;font-weight:500}
+#btn-check:hover{background:var(--color-background-secondary)}
+
+.feedback{min-height:24px;padding:8px 24px 0;font-size:16px;color:var(--color-text-secondary)}
+
+#screen-dead{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:520px;padding:2rem;text-align:center}
+#screen-dead h2{font-size:24px;font-weight:500}
+#screen-dead p{font-size:16px;color:var(--color-text-secondary);max-width:320px}
+.dead-btns{display:flex;flex-direction:column;gap:10px;width:240px}
+.dead-btns button{padding:13px;font-size:16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
+.dead-btns button:hover{background:var(--color-background-secondary)}
+
+#screen-done{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:520px;padding:2rem;text-align:center}
+#screen-done h2{font-size:24px;font-weight:500}
+#screen-done p{color:var(--color-text-secondary);font-size:16px}
+#btn-again2{padding:13px 36px;font-size:16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
+#btn-again2:hover{background:var(--color-background-secondary)}
+
+#forms-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:22px 26px;width:320px;max-width:92vw}
+#forms-panel h3{font-size:17px;font-weight:500;margin-bottom:14px}
+.forms-table{width:100%;border-collapse:collapse;font-size:15px}
+.forms-table td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.forms-table tr:last-child td{border-bottom:none}
+.forms-table td:first-child{color:var(--color-text-secondary);width:90px;font-size:14px}
+.forms-table td:nth-child(2){font-weight:500}
+.forms-table td:nth-child(3){color:var(--color-text-secondary)}
+#btn-close-forms{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--color-text-secondary);line-height:1}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:99}
+#forms-after-dead{display:none;margin-top:16px;padding-top:14px;border-top:0.5px solid var(--color-border-tertiary)}
+#forms-after-dead p{font-size:14px;color:var(--color-text-secondary);margin-bottom:10px}
+#btn-to-practice{width:100%;padding:11px;font-size:15px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
+#btn-to-practice:hover{background:var(--color-background-secondary)}
+</style>
+
+<div id="app">
+<div id="screen-home">
+  <h1>Sloveso BÝT</h1>
+  <h2>Jdeme na to?</h2>
+  <button id="btn-start">Ano, jdeme! →</button>
+</div>
+
+<div id="screen-train">
+  <div class="top-bar">
+    <div class="hearts" id="hearts">❤️❤️❤️</div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <button id="btn-repeat">повторити</button>
+  </div>
+  <div class="sentence-area">
+    <div class="sentence-text" id="sent-display"></div>
+  </div>
+  <div class="transl-btn-row">
+    <button id="btn-transl">Переклад</button>
+  </div>
+  <div id="transl-text"></div>
+  <div class="action-row">
+    <button id="btn-check">Перевірити</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<div id="screen-dead">
+  <div style="font-size:52px">💔</div>
+  <h2>Всі серця втрачено!</h2>
+  <p>Не страшно — зупинись, повтори форми і спробуй ще раз.</p>
+  <div class="dead-btns">
+    <button id="btn-see-forms">Повторити форми</button>
+    <button id="btn-retry">Спробувати ще раз</button>
+  </div>
+</div>
+
+<div id="screen-done">
+  <div style="font-size:52px">🎉</div>
+  <h2>Skvěle!</h2>
+  <p id="done-msg"></p>
+  <button id="btn-again2">Ще раз</button>
+</div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div id="forms-panel">
+  <button id="btn-close-forms">×</button>
+  <h3>Tvary slovesa být</h3>
+  <table class="forms-table">
+    <tr><td>já</td><td>jsem</td><td>nejsem</td></tr>
+    <tr><td>ty</td><td>jsi / jseš</td><td>nejsi</td></tr>
+    <tr><td>on/ona/ono</td><td>je</td><td>není</td></tr>
+    <tr><td>my</td><td>jsme</td><td>nejsme</td></tr>
+    <tr><td>vy</td><td>jste</td><td>nejste</td></tr>
+    <tr><td>oni/ony/ona</td><td>jsou</td><td>nejsou</td></tr>
+  </table>
+  <div id="forms-after-dead">
+    <p>Готовий/а до практики?</p>
+    <button id="btn-to-practice">Іду на тренування →</button>
+  </div>
+</div>
+
+<script>
+const ALL = [
+  {s:"Já ___ v práci už od rána.",v:"být",a:"jsem",hint:"já",tr:"Я на роботі вже з ранку."},
+  {s:"Ty ___ dnes unavený.",v:"být",a:"jsi",hint:"ty",tr:"Ти сьогодні втомлений."},
+  {s:"Tento projekt ___ pro nás důležitý.",v:"být",a:"je",hint:"on",tr:"Цей проект для нас важливий."},
+  {s:"Moje sestra ___ studentkou v Brně.",v:"být",a:"je",hint:"ona",tr:"Моя сестра — студентка у Брно."},
+  {s:"My ___ rádi, že jste přišli.",v:"být",a:"jsme",hint:"my",tr:"Ми раді, що ви прийшли."},
+  {s:"Vy ___ z Prahy nebo odjinud?",v:"být",a:"jste",hint:"vy",tr:"Ви з Праги чи звідкись іще?"},
+  {s:"Moji rodiče ___ na dovolené.",v:"být",a:"jsou",hint:"oni",tr:"Мої батьки у відпустці."},
+  {s:"Já ___ si jistý tím výsledkem.",v:"nebýt",a:"nejsem",hint:"já",tr:"Я не впевнений у тому результаті."},
+  {s:"Kde přesně ty ___ teď?",v:"být",a:"jsi",hint:"ty",tr:"Де саме ти зараз?"},
+  {s:"Dnes ___ opravdu krásné počasí.",v:"být",a:"je",hint:"ono",tr:"Сьогодні справді гарна погода."},
+  {s:"My ___ naštvaní, máme jen práci.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не злі — у нас просто робота."},
+  {s:"Vy ___ pan Novák z kanceláře?",v:"být",a:"jste",hint:"vy",tr:"Ви пан Новак з офісу?"},
+  {s:"Tyto staré domy ___ památkou města.",v:"být",a:"jsou",hint:"oni",tr:"Ці старі будинки — пам'ятка міста."},
+  {s:"Já ___ zvědavý na tvoje řešení.",v:"být",a:"jsem",hint:"já",tr:"Мені цікаво твоє рішення."},
+  {s:"Všechny obchody v neděli ___ zavřené.",v:"být",a:"jsou",hint:"oni",tr:"Усі магазини в неділю зачинені."},
+  {s:"Já ___ spokojený s dnešní prací.",v:"být",a:"jsem",hint:"já",tr:"Я задоволений сьогоднішньою роботою."},
+  {s:"Ty ___ doma? Kde tě najdu?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Тебе немає вдома? Де тебе знайти?"},
+  {s:"Můj bratr ___ skvělý sportovec.",v:"být",a:"je",hint:"on",tr:"Мій брат — чудовий спортсмен."},
+  {s:"Tato restaurace ___ vůbec drahá.",v:"nebýt",a:"není",hint:"ona",tr:"Цей ресторан зовсім не дорогий."},
+  {s:"My ___ připraveni na zkoušku.",v:"být",a:"jsme",hint:"my",tr:"Ми готові до іспиту."},
+  {s:"Vy ___ unavení po té cestě?",v:"nebýt",a:"nejste",hint:"vy",tr:"Ви не втомлені після тієї поїздки?"},
+  {s:"Já ___ připraven na takovou otázku.",v:"nebýt",a:"nejsem",hint:"já",tr:"Я не готовий до такого питання."},
+  {s:"Ty ___ velmi hodný člověk.",v:"být",a:"jsi",hint:"ty",tr:"Ти дуже добра людина."},
+  {s:"Čeština ___ krásný, ale těžký jazyk.",v:"být",a:"je",hint:"ona",tr:"Чеська — красива, але важка мова."},
+  {s:"Oběd ___ ještě hotový.",v:"nebýt",a:"není",hint:"on",tr:"Обід ще не готовий."},
+  {s:"My ___ v kině na novém filmu.",v:"být",a:"jsme",hint:"my",tr:"Ми в кіно на новому фільмі."},
+  {s:"Proč vy ___ teď v práci?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас зараз немає на роботі?"},
+  {s:"Klíče od bytu ___ na stole.",v:"být",a:"jsou",hint:"oni",tr:"Ключі від квartири на столі."},
+  {s:"Já ___ unavený z dlouhé cesty.",v:"být",a:"jsem",hint:"já",tr:"Я втомився від довгої дороги."},
+  {s:"Ty ___ v Česku poprvé?",v:"být",a:"jsi",hint:"ty",tr:"Ти в Чехії вперше?"},
+  {s:"Káva ___ dobrá bez cukru.",v:"nebýt",a:"není",hint:"ona",tr:"Кава без цукру несмачна."},
+  {s:"Tato kniha ___ velmi zajímavá.",v:"být",a:"je",hint:"ona",tr:"Ця книга дуже цікава."},
+  {s:"My ___ Češi, jsme z Ukrajiny.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не чехи — ми з України."},
+  {s:"Odkud vy ___, pane řediteli?",v:"být",a:"jste",hint:"vy",tr:"Звідки ви, пане директоре?"},
+  {s:"Já ___ moc rád, že tě vidím.",v:"být",a:"jsem",hint:"já",tr:"Я дуже радий тебе бачити."},
+  {s:"Ty ___ ještě připravený na odchod?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Ти ще не готовий іти?"},
+  {s:"Dnes ___ pondělí.",v:"být",a:"je",hint:"ono",tr:"Сьогодні понеділок."},
+  {s:"Tento úkol ___ vůbec snadný.",v:"nebýt",a:"není",hint:"on",tr:"Це завдання зовсім не легке."},
+  {s:"My ___ vděční za vaši pomoc.",v:"být",a:"jsme",hint:"my",tr:"Ми вдячні за вашу допомогу."},
+  {s:"Vy ___ spokojení s novým bytem?",v:"být",a:"jste",hint:"vy",tr:"Ви задоволені новою квартирою?"},
+  {s:"Já ___ zvyklý na takové horko.",v:"nebýt",a:"nejsem",hint:"já",tr:"Я не звик до такої спеки."},
+  {s:"Ty ___ dnes velmi veselý.",v:"být",a:"jsi",hint:"ty",tr:"Ти сьогодні дуже веселий."},
+  {s:"Škola ___ blízko našeho domu.",v:"být",a:"je",hint:"ona",tr:"Школа поруч із нашим будинком."},
+  {s:"Počasí v Brně ___ dnes pěkné.",v:"nebýt",a:"není",hint:"ono",tr:"Погода в Брно сьогодні негарна."},
+  {s:"My ___ na cestě na nádraží.",v:"být",a:"jsme",hint:"my",tr:"Ми по дорозі на вокзал."},
+  {s:"Vy ___ spokojeni s tou nabídkou?",v:"nebýt",a:"nejste",hint:"vy",tr:"Ви не задоволені тією пропозицією?"},
+  {s:"On ___ dnes v Brně.",v:"být",a:"je",hint:"on",tr:"Він сьогодні у Брно."},
+  {s:"Ona ___ momentálně v Ostravě.",v:"nebýt",a:"není",hint:"ona",tr:"Її зараз немає в Остраві."},
+  {s:"Kamarád ___ připravený na test.",v:"být",a:"je",hint:"on",tr:"Друг готовий до тесту."},
+  {s:"My ___ dnes velmi překvapení.",v:"být",a:"jsme",hint:"my",tr:"Ми сьогодні дуже здивовані."},
+  {s:"Pan Novák ___ momentálně v kanceláři.",v:"být",a:"je",hint:"on",tr:"Пан Новak зараз в офісі."},
+  {s:"Ty ___ dnes zvědavý.",v:"být",a:"jsi",hint:"ty",tr:"Ти сьогодні допитливий."},
+  {s:"Proč on ___ v lese s námi?",v:"nebýt",a:"není",hint:"on",tr:"Чому його немає з нами в лісі?"},
+  {s:"Já ___ dnes smutný.",v:"nebýt",a:"nejsem",hint:"já",tr:"Я сьогодні не сумний."},
+  {s:"Proč ona ___ na schůzce s námi?",v:"nebýt",a:"není",hint:"ona",tr:"Чому її немає з нами на зустрічі?"},
+  {s:"Vy ___ spokojený v nové práci?",v:"být",a:"jste",hint:"vy",tr:"Ви задоволені новою роботою?"},
+  {s:"Rodiče ___ momentálně na dovolené.",v:"být",a:"jsou",hint:"oni",tr:"Батьки зараз у відпустці."},
+  {s:"Oni ___ dnes vděční.",v:"být",a:"jsou",hint:"oni",tr:"Вони сьогодні вдячні."},
+  {s:"Proč ty ___ na zahradě s námi?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Чому тебе немає з нами в саду?"},
+  {s:"Tento projekt ___ momentálně důležitý.",v:"být",a:"je",hint:"on",tr:"Цей проект зараз важливий."},
+  {s:"Ona ___ dnes velmi připravená.",v:"být",a:"je",hint:"ona",tr:"Вона сьогодні дуже підготовлена."},
+  {s:"Kolegové ___ v kanceláři.",v:"být",a:"jsou",hint:"oni",tr:"Колеги в офісі."},
+  {s:"My ___ dnes unavení.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми сьогодні не втомлені."},
+  {s:"Náš šéf ___ na cestě.",v:"být",a:"je",hint:"on",tr:"Наш шеф у дорозі."},
+  {s:"Oni ___ dnes překvapení.",v:"být",a:"jsou",hint:"oni",tr:"Вони сьогодні здивовані."},
+  {s:"Proč ty ___ ve škole dnes?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Чому тебе сьогодні немає в школі?"},
+  {s:"Káva ___ horká a dobrá.",v:"být",a:"je",hint:"ona",tr:"Кава гаряча і смачна."},
+  {s:"Já ___ dnes překvapený.",v:"být",a:"jsem",hint:"já",tr:"Я сьогодні здивований."},
+  {s:"Oni ___ dnes zvědaví.",v:"být",a:"jsou",hint:"oni",tr:"Вони сьогодні допитливі."},
+  {s:"Já ___ připravený na zkoušku.",v:"být",a:"jsem",hint:"já",tr:"Я готовий до іспиту."},
+  {s:"Proč ona ___ ve škole?",v:"nebýt",a:"není",hint:"ona",tr:"Чому її немає в školě?"},
+  {s:"Všechny obchody ___ v neděli zavřené.",v:"být",a:"jsou",hint:"oni",tr:"Усі магaziny в неділю закриті."},
+  {s:"Vy ___ dnes smutní?",v:"nebýt",a:"nejste",hint:"vy",tr:"Ви сьогодні не сумні?"},
+  {s:"My ___ spokojení s výsledkem.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не задоволені результatом."},
+  {s:"Proč oni ___ v kanceláři?",v:"nebýt",a:"nejsou",hint:"oni",tr:"Чому їх немає в офісі?"},
+  {s:"Vy ___ dnes překvapení.",v:"být",a:"jste",hint:"vy",tr:"Ви сьогодні здивовані."},
+  {s:"Proč vy ___ ve škole dnes?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас сьогодні немає в школі?"},
+  {s:"Já ___ zvědavý.",v:"být",a:"jsem",hint:"já",tr:"Я допитливий."},
+  {s:"Vy ___ unavení po práci.",v:"být",a:"jste",hint:"vy",tr:"Ви втомлені після роботи."},
+  {s:"Proč oni ___ na zahradě?",v:"nebýt",a:"nejsou",hint:"oni",tr:"Чому їх немає в саду?"},
+  {s:"Dnes ___ středa.",v:"být",a:"je",hint:"ono",tr:"Сьогодні середа."},
+  {s:"Oni ___ překvapení.",v:"být",a:"jsou",hint:"oni",tr:"Вони здивовані."},
+  {s:"Proč on ___ v kině s námi?",v:"nebýt",a:"není",hint:"on",tr:"Чому його немає з нами в кіно?"},
+  {s:"Moje sestra ___ v práci.",v:"být",a:"je",hint:"ona",tr:"Моя сестра на роботі."},
+  {s:"My ___ dnes veselí.",v:"být",a:"jsme",hint:"my",tr:"Ми сьогодні веселі."},
+  {s:"On ___ zvědavý.",v:"nebýt",a:"není",hint:"on",tr:"Він не допитливий."},
+  {s:"Já ___ rád, že jsi tady.",v:"být",a:"jsem",hint:"já",tr:"Я радий, що ти тут."},
+  {s:"Vy ___ z Brna nebo z Prahy?",v:"být",a:"jste",hint:"vy",tr:"Ви з Брno чи з Праги?"},
+  {s:"Pan Novák ___ hodný člověk.",v:"být",a:"je",hint:"on",tr:"Пан Новak — добра людина."},
+  {s:"My ___ z Ukrajiny.",v:"být",a:"jsme",hint:"my",tr:"Ми з України."},
+  {s:"Proč vy ___ tady?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас тут немає?"},
+  {s:"Restaurace ___ drahá.",v:"nebýt",a:"není",hint:"ona",tr:"Ресторан не дорогий."},
+  {s:"Já ___ z Kyjeva.",v:"být",a:"jsem",hint:"já",tr:"Я з Києва."},
+  {s:"Ty ___ student?",v:"být",a:"jsi",hint:"ty",tr:"Ти студент?"},
+  {s:"Počasí ___ dnes hezké.",v:"být",a:"je",hint:"ono",tr:"Погода сьогодні гарна."},
+  {s:"My ___ spokojení.",v:"být",a:"jsme",hint:"my",tr:"Ми задоволені."},
+  {s:"Vy ___ z Ostravy?",v:"být",a:"jste",hint:"vy",tr:"Ви з Острави?"},
+  {s:"Oni ___ v práci.",v:"být",a:"jsou",hint:"oni",tr:"Вони на роботі."},
+  {s:"Já ___ tady.",v:"nebýt",a:"nejsem",hint:"já",tr:"Мене тут немає."},
+  {s:"Ty ___ student češtiny?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Ти не студент чеської?"},
+  {s:"Ona ___ doma.",v:"nebýt",a:"není",hint:"ona",tr:"Її немає вдома."},
+  {s:"My ___ hotovi.",v:"být",a:"jsme",hint:"my",tr:"Ми готові."},
+  {s:"Vy ___ tady poprvé?",v:"být",a:"jste",hint:"vy",tr:"Ви тут вперше?"},
+  {s:"Oni ___ hotovi.",v:"být",a:"jsou",hint:"oni",tr:"Вони готові."},
+  {s:"Já ___ šťastný.",v:"být",a:"jsem",hint:"já",tr:"Я щасливий."},
+  {s:"Ty ___ unavený z cesty?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Ти не втомився з дороги?"},
+  {s:"On ___ v restauraci.",v:"být",a:"je",hint:"on",tr:"Він у ресторані."},
+  {s:"Ty ___ první ve třídě?",v:"být",a:"jsi",hint:"ty",tr:"Ти перший у класі?"},
+  {s:"Toto město ___ velmi hezké.",v:"být",a:"je",hint:"ono",tr:"Це місто дуже гарне."},
+  {s:"My ___ připraveni na test.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не готові до тесту."},
+  {s:"Vy ___ ve třídě?",v:"nebýt",a:"nejste",hint:"vy",tr:"Вас немає в класі?"},
+  {s:"Všichni studenti ___ tady dnes.",v:"být",a:"jsou",hint:"oni",tr:"Усі студенти сьогодні тут."},
+  {s:"Kamarádka ___ doma.",v:"nebýt",a:"není",hint:"ona",tr:"Подруги немає вдома."},
+  {s:"Tento test ___ snadný.",v:"nebýt",a:"není",hint:"on",tr:"Цей тест не легкий."},
+  {s:"Klíče ___ na stole v předsíni.",v:"být",a:"jsou",hint:"oni",tr:"Ключі на столі в передпокої."},
+  {s:"Dnes ___ pátek.",v:"být",a:"je",hint:"ono",tr:"Сьогодні п'ятниця."},
+  {s:"Já ___ unavený z práce.",v:"být",a:"jsem",hint:"já",tr:"Я втомлений після роботи."},
+  {s:"Proč ty ___ v kanceláři dnes?",v:"nebýt",a:"nejsi",hint:"ty",tr:"Чому тебе сьогодні немає в офісі?"},
+  {s:"Škola ___ blízko stanice.",v:"být",a:"je",hint:"ona",tr:"Школа поруч із станцією."},
+  {s:"Oni ___ dnes unavení.",v:"být",a:"jsou",hint:"oni",tr:"Вони сьогодні втомлені."},
+  {s:"Já ___ rád, že jdeme spolu.",v:"být",a:"jsem",hint:"já",tr:"Я радий, що йдемо разом."},
+  {s:"Proč on ___ doma dnes?",v:"nebýt",a:"není",hint:"on",tr:"Чому його сьогодні немає вдома?"},
+  {s:"Ona ___ velmi veselá dnes.",v:"být",a:"je",hint:"ona",tr:"Вона сьогодні дуже весела."},
+  {s:"Vy ___ připravení na cestu?",v:"být",a:"jste",hint:"vy",tr:"Ви готові до поїздки?"},
+  {s:"Oběd ___ za chvíli hotový.",v:"být",a:"je",hint:"on",tr:"Обід буде готовий за хвилину."},
+  {s:"Ty ___ rád, že jsi tady?",v:"být",a:"jsi",hint:"ty",tr:"Ти радий, що ти тут?"},
+];
+
+const SET_SIZE=15, MAX_H=3;
+let pool=[],cur=[],idx=0,hearts=3,errors=0,checked=false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function show(id){['screen-home','screen-train','screen-dead','screen-done'].forEach(s=>document.getElementById(s).style.display=s===id?'flex':'none')}
+
+function startGame(){
+  pool=shuffle([...ALL]);cur=pool.slice(0,SET_SIZE);
+  idx=0;hearts=MAX_H;errors=0;checked=false;
+  show('screen-train');updateHearts();loadSentence();
+}
+
+function loadSentence(){
+  checked=false;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('transl-text').style.display='none';
+  document.getElementById('transl-text').textContent='';
+  document.getElementById('btn-transl').style.display='';
+  document.getElementById('btn-check').textContent='Перевірити';
+  updateProgress();
+  const s=cur[idx];
+  const parts=s.s.split('___');
+  const disp=document.getElementById('sent-display');
+  disp.innerHTML='';
+
+  if(parts[0]){const sp=document.createElement('span');sp.textContent=parts[0];disp.appendChild(sp);}
+
+  const wrap=document.createElement('span');wrap.className='inline-input-wrap';
+  const inp=document.createElement('input');
+  inp.id='ans-input';inp.type='text';inp.autocomplete='off';inp.spellcheck=false;inp.placeholder='...';
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAnswer();});
+  wrap.appendChild(inp);
+  const vh=document.createElement('span');vh.className='verb-hint';vh.textContent='('+s.v+')';wrap.appendChild(vh);
+  disp.appendChild(wrap);
+
+  if(parts[1]){const sp=document.createElement('span');sp.textContent=parts[1].trimEnd();disp.appendChild(sp);}
+
+  const hb=document.createElement('span');
+  hb.className='hint-btn';hb.id='hint-btn';hb.textContent='?';
+  hb.onclick=function(){
+    if(hb.classList.contains('open')){hb.textContent='?';hb.classList.remove('open');}
+    else{hb.textContent=s.hint;hb.classList.add('open');}
+  };
+  disp.appendChild(hb);
+
+  setTimeout(()=>inp.focus(),50);
+}
+
+function updateProgress(){document.getElementById('prog').style.width=(idx/SET_SIZE*100)+'%'}
+function updateHearts(){let h='';for(let i=0;i<hearts;i++)h+='❤️';for(let i=hearts;i<MAX_H;i++)h+='🖤';document.getElementById('hearts').textContent=h}
+function norm(s){return s.trim().toLowerCase().replace(/\s+/g,' ')}
+
+function checkAnswer(){
+  if(checked){next();return;}
+  const inp=document.getElementById('ans-input');
+  const val=norm(inp.value);
+  const s=cur[idx];
+  const ok=[s.a,...(s.a==='jsi'?['jseš']:[])].includes(val);
+  inp.className=ok?'ok':'err';inp.readOnly=true;
+  document.getElementById('transl-text').textContent=s.tr;
+  document.getElementById('transl-text').style.display='block';
+  document.getElementById('btn-transl').style.display='none';
+  if(ok){document.getElementById('feedback').textContent='✓ Správně!';}
+  else{
+    document.getElementById('feedback').textContent='✗ Správně: '+s.a;
+    hearts--;errors++;updateHearts();
+    if(hearts<=0){setTimeout(()=>show('screen-dead'),700);return;}
+  }
+  checked=true;document.getElementById('btn-check').textContent='Далі →';
+}
+
+function next(){
+  idx++;
+  if(idx>=SET_SIZE){
+    document.getElementById('prog').style.width='100%';
+    document.getElementById('done-msg').textContent=errors===0?'Perfektní — жодної помилки! 🏆':'Готово! Помилок: '+errors;
+    show('screen-done');return;
+  }
+  loadSentence();
+}
+
+function showForms(ad){document.getElementById('forms-after-dead').style.display=ad?'block':'none';document.getElementById('forms-panel').style.display='block';document.getElementById('overlay').style.display='block'}
+function hideForms(){document.getElementById('forms-panel').style.display='none';document.getElementById('overlay').style.display='none'}
+
+document.getElementById('btn-start').onclick=startGame;
+document.getElementById('btn-check').onclick=checkAnswer;
+document.getElementById('btn-repeat').onclick=()=>showForms(false);
+document.getElementById('btn-close-forms').onclick=hideForms;
+document.getElementById('overlay').onclick=hideForms;
+document.getElementById('btn-see-forms').onclick=()=>showForms(true);
+document.getElementById('btn-retry').onclick=startGame;
+document.getElementById('btn-to-practice').onclick=()=>{hideForms();startGame()};
+document.getElementById('btn-again2').onclick=startGame;
+
+document.getElementById('btn-transl').onclick=function(){
+  const s=cur[idx];if(!s)return;
+  document.getElementById('transl-text').textContent=s.tr;
+  document.getElementById('transl-text').style.display='block';
+  document.getElementById('btn-transl').style.display='none';
+};
+</script>
