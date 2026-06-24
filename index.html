@@ -1,117 +1,128 @@
-
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sloveso BÝT</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);color:var(--color-text-primary)}
-#app{min-height:520px;display:flex;flex-direction:column}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;background:#fff;min-height:100vh}
+  #app{min-height:100vh;display:flex;flex-direction:column}
 
-#screen-home{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;min-height:520px;padding:2rem}
-#screen-home h1{font-size:32px;font-weight:500}
-#screen-home h2{font-size:22px;font-weight:400;color:var(--color-text-secondary)}
-#screen-home button{width:240px;padding:15px 0;font-size:18px;font-weight:500;border-radius:var(--border-radius-lg);background:var(--color-background-primary);border:1.5px solid var(--color-border-secondary);cursor:pointer}
-#screen-home button:hover{background:var(--color-background-secondary)}
+  /* HOME */
+  #screen-home{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;min-height:100vh;padding:2rem}
+  #screen-home h1{font-size:32px;font-weight:500}
+  #screen-home h2{font-size:22px;font-weight:400;color:#666}
+  #screen-home button{width:240px;padding:15px 0;font-size:18px;font-weight:500;border-radius:12px;background:#fff;border:1.5px solid #ccc;cursor:pointer;transition:background .15s}
+  #screen-home button:hover{background:#f5f5f5}
 
-#screen-train{display:none;flex-direction:column;min-height:520px}
-.top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary)}
-.hearts{font-size:22px;display:flex;gap:4px}
-.prog-wrap{flex:1;margin:0 14px;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
-.prog-fill{height:100%;background:#1D9E75;border-radius:4px;transition:width .3s}
-#btn-repeat{background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 14px;font-size:14px;cursor:pointer;color:var(--color-text-secondary)}
-#btn-repeat:hover{background:var(--color-background-secondary)}
+  /* TRAIN */
+  #screen-train{display:none;flex-direction:column;min-height:100vh}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #eee}
+  .hearts{font-size:22px;display:flex;gap:4px}
+  .prog-wrap{flex:1;margin:0 14px;height:8px;background:#eee;border-radius:4px;overflow:hidden}
+  .prog-fill{height:100%;background:#1D9E75;border-radius:4px;transition:width .3s}
+  #btn-repeat{background:none;border:1px solid #ccc;border-radius:8px;padding:7px 14px;font-size:14px;cursor:pointer;color:#666;font-family:inherit}
+  #btn-repeat:hover{background:#f5f5f5}
 
-.sentence-area{padding:28px 24px 0;display:flex;flex-direction:column;gap:0}
+  .sentence-area{padding:36px 28px 0}
+  .sentence-text{font-size:22px;line-height:2.6;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+  .inline-input-wrap{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+  #ans-input{font-size:20px;font-family:inherit;padding:4px 10px;border:none;border-bottom:2px solid #bbb;background:transparent;color:#1a1a1a;outline:none;width:120px;text-align:center;transition:border-color .2s,background .2s,border-radius .2s}
+  #ans-input:focus{border-bottom-color:#555}
+  #ans-input.ok{border-color:#1D9E75;background:#E1F5EE;border-radius:8px}
+  #ans-input.err{border-color:#E24B4A;background:#FCEBEB;border-radius:8px}
+  .verb-hint{font-size:15px;color:#888;white-space:nowrap}
+  .hint-btn{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 8px;border:1px solid #ccc;border-radius:8px;font-size:15px;cursor:pointer;background:#fff;color:#666;user-select:none;vertical-align:middle;white-space:nowrap;transition:background .15s;font-family:inherit}
+  .hint-btn:hover{background:#f5f5f5}
+  .hint-btn.open{background:#f0f0f0;color:#1a1a1a;font-weight:500}
 
-.transl-btn-row{padding:10px 24px 0}
-#btn-transl{font-size:22px;font-weight:400;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;padding:0;text-align:left;font-family:var(--font-sans)}
-#btn-transl:hover{color:var(--color-text-primary)}
-#transl-text{font-size:22px;color:var(--color-text-secondary);font-style:italic;display:none;padding:10px 24px 0}
+  .transl-btn-row{padding:12px 28px 0}
+  #btn-transl{font-size:22px;font-weight:400;color:#888;background:none;border:none;cursor:pointer;padding:0;text-align:left;font-family:inherit}
+  #btn-transl:hover{color:#444}
+  #transl-text{font-size:22px;color:#888;font-style:italic;display:none;padding:12px 28px 0}
 
-.sentence-text{font-size:22px;line-height:2.4;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
-.inline-input-wrap{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
-#ans-input{font-size:20px;font-family:var(--font-sans);padding:4px 10px;border:none;border-bottom:2px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);outline:none;width:120px;text-align:center;transition:border-color .2s,background .2s,border-radius .2s}
-#ans-input.ok{border-color:#1D9E75;background:#E1F5EE;border-radius:var(--border-radius-md)}
-#ans-input.err{border-color:#E24B4A;background:#FCEBEB;border-radius:var(--border-radius-md)}
-.verb-hint{font-size:16px;color:var(--color-text-secondary);white-space:nowrap}
-.hint-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:15px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);user-select:none;vertical-align:middle;white-space:nowrap;transition:background .15s}
-.hint-btn:hover{background:var(--color-background-secondary)}
-.hint-btn.open{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+  .action-row{display:flex;align-items:center;gap:10px;padding:18px 28px 0}
+  #btn-check{padding:10px 24px;font-size:16px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-weight:500;font-family:inherit}
+  #btn-check:hover{background:#f5f5f5}
 
-.action-row{display:flex;align-items:center;gap:10px;padding:16px 24px 0}
-#btn-check{padding:9px 22px;font-size:16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;font-weight:500}
-#btn-check:hover{background:var(--color-background-secondary)}
+  .feedback{min-height:24px;padding:10px 28px 0;font-size:16px;color:#666}
 
-.feedback{min-height:24px;padding:8px 24px 0;font-size:16px;color:var(--color-text-secondary)}
+  /* DEAD */
+  #screen-dead{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:100vh;padding:2rem;text-align:center}
+  #screen-dead h2{font-size:24px;font-weight:500}
+  #screen-dead p{font-size:16px;color:#666;max-width:320px}
+  .dead-btns{display:flex;flex-direction:column;gap:10px;width:240px}
+  .dead-btns button{padding:13px;font-size:16px;border-radius:12px;border:1px solid #ccc;background:#fff;cursor:pointer;font-family:inherit}
+  .dead-btns button:hover{background:#f5f5f5}
 
-#screen-dead{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:520px;padding:2rem;text-align:center}
-#screen-dead h2{font-size:24px;font-weight:500}
-#screen-dead p{font-size:16px;color:var(--color-text-secondary);max-width:320px}
-.dead-btns{display:flex;flex-direction:column;gap:10px;width:240px}
-.dead-btns button{padding:13px;font-size:16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
-.dead-btns button:hover{background:var(--color-background-secondary)}
+  /* DONE */
+  #screen-done{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:100vh;padding:2rem;text-align:center}
+  #screen-done h2{font-size:24px;font-weight:500}
+  #screen-done p{color:#666;font-size:16px}
+  #btn-again2{padding:13px 36px;font-size:16px;border-radius:12px;border:1px solid #ccc;background:#fff;cursor:pointer;font-family:inherit}
+  #btn-again2:hover{background:#f5f5f5}
 
-#screen-done{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;min-height:520px;padding:2rem;text-align:center}
-#screen-done h2{font-size:24px;font-weight:500}
-#screen-done p{color:var(--color-text-secondary);font-size:16px}
-#btn-again2{padding:13px 36px;font-size:16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
-#btn-again2:hover{background:var(--color-background-secondary)}
-
-#forms-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:22px 26px;width:320px;max-width:92vw}
-#forms-panel h3{font-size:17px;font-weight:500;margin-bottom:14px}
-.forms-table{width:100%;border-collapse:collapse;font-size:15px}
-.forms-table td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
-.forms-table tr:last-child td{border-bottom:none}
-.forms-table td:first-child{color:var(--color-text-secondary);width:90px;font-size:14px}
-.forms-table td:nth-child(2){font-weight:500}
-.forms-table td:nth-child(3){color:var(--color-text-secondary)}
-#btn-close-forms{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--color-text-secondary);line-height:1}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:99}
-#forms-after-dead{display:none;margin-top:16px;padding-top:14px;border-top:0.5px solid var(--color-border-tertiary)}
-#forms-after-dead p{font-size:14px;color:var(--color-text-secondary);margin-bottom:10px}
-#btn-to-practice{width:100%;padding:11px;font-size:15px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer}
-#btn-to-practice:hover{background:var(--color-background-secondary)}
+  /* FORMS PANEL */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99}
+  #forms-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px 26px;width:320px;max-width:92vw;box-shadow:0 4px 32px rgba(0,0,0,.12)}
+  #forms-panel h3{font-size:17px;font-weight:500;margin-bottom:14px}
+  .forms-table{width:100%;border-collapse:collapse;font-size:15px}
+  .forms-table td{padding:7px 10px;border-bottom:1px solid #f0f0f0}
+  .forms-table tr:last-child td{border-bottom:none}
+  .forms-table td:first-child{color:#888;width:90px;font-size:14px}
+  .forms-table td:nth-child(2){font-weight:500}
+  .forms-table td:nth-child(3){color:#888}
+  #btn-close-forms{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#888;line-height:1}
+  #forms-after-dead{display:none;margin-top:16px;padding-top:14px;border-top:1px solid #eee}
+  #forms-after-dead p{font-size:14px;color:#888;margin-bottom:10px}
+  #btn-to-practice{width:100%;padding:11px;font-size:15px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-family:inherit}
+  #btn-to-practice:hover{background:#f5f5f5}
 </style>
-
+</head>
+<body>
 <div id="app">
-<div id="screen-home">
-  <h1>Sloveso BÝT</h1>
-  <h2>Jdeme na to?</h2>
-  <button id="btn-start">Ano, jdeme! →</button>
-</div>
+  <div id="screen-home">
+    <h1>Sloveso BÝT</h1>
+    <h2>Jdeme na to?</h2>
+    <button id="btn-start">Ano, jdeme! →</button>
+  </div>
 
-<div id="screen-train">
-  <div class="top-bar">
-    <div class="hearts" id="hearts">❤️❤️❤️</div>
-    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
-    <button id="btn-repeat">повторити</button>
+  <div id="screen-train">
+    <div class="top-bar">
+      <div class="hearts" id="hearts">❤️❤️❤️</div>
+      <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <button id="btn-repeat">повторити</button>
+    </div>
+    <div class="sentence-area">
+      <div class="sentence-text" id="sent-display"></div>
+    </div>
+    <div class="transl-btn-row">
+      <button id="btn-transl">Переклад</button>
+    </div>
+    <div id="transl-text"></div>
+    <div class="action-row">
+      <button id="btn-check">Перевірити</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
   </div>
-  <div class="sentence-area">
-    <div class="sentence-text" id="sent-display"></div>
-  </div>
-  <div class="transl-btn-row">
-    <button id="btn-transl">Переклад</button>
-  </div>
-  <div id="transl-text"></div>
-  <div class="action-row">
-    <button id="btn-check">Перевірити</button>
-  </div>
-  <div class="feedback" id="feedback"></div>
-</div>
 
-<div id="screen-dead">
-  <div style="font-size:52px">💔</div>
-  <h2>Всі серця втрачено!</h2>
-  <p>Не страшно — зупинись, повтори форми і спробуй ще раз.</p>
-  <div class="dead-btns">
-    <button id="btn-see-forms">Повторити форми</button>
-    <button id="btn-retry">Спробувати ще раз</button>
+  <div id="screen-dead">
+    <div style="font-size:52px">💔</div>
+    <h2>Всі серця втрачено!</h2>
+    <p>Не страшно — зупинись, повтори форми і спробуй ще раз.</p>
+    <div class="dead-btns">
+      <button id="btn-see-forms">Повторити форми</button>
+      <button id="btn-retry">Спробувати ще раз</button>
+    </div>
   </div>
-</div>
 
-<div id="screen-done">
-  <div style="font-size:52px">🎉</div>
-  <h2>Skvěle!</h2>
-  <p id="done-msg"></p>
-  <button id="btn-again2">Ще раз</button>
-</div>
+  <div id="screen-done">
+    <div style="font-size:52px">🎉</div>
+    <h2>Skvěle!</h2>
+    <p id="done-msg"></p>
+    <button id="btn-again2">Ще раз</button>
+  </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -161,7 +172,7 @@ const ALL = [
   {s:"Oběd ___ ještě hotový.",v:"nebýt",a:"není",hint:"on",tr:"Обід ще не готовий."},
   {s:"My ___ v kině na novém filmu.",v:"být",a:"jsme",hint:"my",tr:"Ми в кіно на новому фільмі."},
   {s:"Proč vy ___ teď v práci?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас зараз немає на роботі?"},
-  {s:"Klíče od bytu ___ na stole.",v:"být",a:"jsou",hint:"oni",tr:"Ключі від квartири на столі."},
+  {s:"Klíče od bytu ___ na stole.",v:"být",a:"jsou",hint:"oni",tr:"Ключі від квартири на столі."},
   {s:"Já ___ unavený z dlouhé cesty.",v:"být",a:"jsem",hint:"já",tr:"Я втомився від довгої дороги."},
   {s:"Ty ___ v Česku poprvé?",v:"být",a:"jsi",hint:"ty",tr:"Ти в Чехії вперше?"},
   {s:"Káva ___ dobrá bez cukru.",v:"nebýt",a:"není",hint:"ona",tr:"Кава без цукру несмачна."},
@@ -184,7 +195,7 @@ const ALL = [
   {s:"Ona ___ momentálně v Ostravě.",v:"nebýt",a:"není",hint:"ona",tr:"Її зараз немає в Остраві."},
   {s:"Kamarád ___ připravený na test.",v:"být",a:"je",hint:"on",tr:"Друг готовий до тесту."},
   {s:"My ___ dnes velmi překvapení.",v:"být",a:"jsme",hint:"my",tr:"Ми сьогодні дуже здивовані."},
-  {s:"Pan Novák ___ momentálně v kanceláři.",v:"být",a:"je",hint:"on",tr:"Пан Новak зараз в офісі."},
+  {s:"Pan Novák ___ momentálně v kanceláři.",v:"být",a:"je",hint:"on",tr:"Пан Новак зараз в офісі."},
   {s:"Ty ___ dnes zvědavý.",v:"být",a:"jsi",hint:"ty",tr:"Ти сьогодні допитливий."},
   {s:"Proč on ___ v lese s námi?",v:"nebýt",a:"není",hint:"on",tr:"Чому його немає з нами в лісі?"},
   {s:"Já ___ dnes smutný.",v:"nebýt",a:"nejsem",hint:"já",tr:"Я сьогодні не сумний."},
@@ -204,13 +215,13 @@ const ALL = [
   {s:"Já ___ dnes překvapený.",v:"být",a:"jsem",hint:"já",tr:"Я сьогодні здивований."},
   {s:"Oni ___ dnes zvědaví.",v:"být",a:"jsou",hint:"oni",tr:"Вони сьогодні допитливі."},
   {s:"Já ___ připravený na zkoušku.",v:"být",a:"jsem",hint:"já",tr:"Я готовий до іспиту."},
-  {s:"Proč ona ___ ve škole?",v:"nebýt",a:"není",hint:"ona",tr:"Чому її немає в školě?"},
-  {s:"Všechny obchody ___ v neděli zavřené.",v:"být",a:"jsou",hint:"oni",tr:"Усі магaziny в неділю закриті."},
+  {s:"Proč ona ___ ve škole?",v:"nebýt",a:"není",hint:"ona",tr:"Чому її немає в škole?"},
+  {s:"Všechny obchody ___ v neděli zavřené.",v:"být",a:"jsou",hint:"oni",tr:"Усі магазини в неділю закриті."},
   {s:"Vy ___ dnes smutní?",v:"nebýt",a:"nejste",hint:"vy",tr:"Ви сьогодні не сумні?"},
-  {s:"My ___ spokojení s výsledkem.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не задоволені результatом."},
+  {s:"My ___ spokojení s výsledkem.",v:"nebýt",a:"nejsme",hint:"my",tr:"Ми не задоволені результатом."},
   {s:"Proč oni ___ v kanceláři?",v:"nebýt",a:"nejsou",hint:"oni",tr:"Чому їх немає в офісі?"},
   {s:"Vy ___ dnes překvapení.",v:"být",a:"jste",hint:"vy",tr:"Ви сьогодні здивовані."},
-  {s:"Proč vy ___ ve škole dnes?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас сьогодні немає в школі?"},
+  {s:"Proč vy ___ ve škole dnes?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас сьогодні немає в škole?"},
   {s:"Já ___ zvědavý.",v:"být",a:"jsem",hint:"já",tr:"Я допитливий."},
   {s:"Vy ___ unavení po práci.",v:"být",a:"jste",hint:"vy",tr:"Ви втомлені після роботи."},
   {s:"Proč oni ___ na zahradě?",v:"nebýt",a:"nejsou",hint:"oni",tr:"Чому їх немає в саду?"},
@@ -221,8 +232,8 @@ const ALL = [
   {s:"My ___ dnes veselí.",v:"být",a:"jsme",hint:"my",tr:"Ми сьогодні веселі."},
   {s:"On ___ zvědavý.",v:"nebýt",a:"není",hint:"on",tr:"Він не допитливий."},
   {s:"Já ___ rád, že jsi tady.",v:"být",a:"jsem",hint:"já",tr:"Я радий, що ти тут."},
-  {s:"Vy ___ z Brna nebo z Prahy?",v:"být",a:"jste",hint:"vy",tr:"Ви з Брno чи з Праги?"},
-  {s:"Pan Novák ___ hodný člověk.",v:"být",a:"je",hint:"on",tr:"Пан Новak — добра людина."},
+  {s:"Vy ___ z Brna nebo z Prahy?",v:"být",a:"jste",hint:"vy",tr:"Ви з Брно чи з Праги?"},
+  {s:"Pan Novák ___ hodný člověk.",v:"být",a:"je",hint:"on",tr:"Пан Новак — добра людина."},
   {s:"My ___ z Ukrajiny.",v:"být",a:"jsme",hint:"my",tr:"Ми з України."},
   {s:"Proč vy ___ tady?",v:"nebýt",a:"nejste",hint:"vy",tr:"Чому вас тут немає?"},
   {s:"Restaurace ___ drahá.",v:"nebýt",a:"není",hint:"ona",tr:"Ресторан не дорогий."},
@@ -262,7 +273,7 @@ const ALL = [
   {s:"Ty ___ rád, že jsi tady?",v:"být",a:"jsi",hint:"ty",tr:"Ти радий, що ти тут?"},
 ];
 
-const SET_SIZE=15, MAX_H=3;
+const SET_SIZE=15,MAX_H=3;
 let pool=[],cur=[],idx=0,hearts=3,errors=0,checked=false;
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -300,7 +311,7 @@ function loadSentence(){
   if(parts[1]){const sp=document.createElement('span');sp.textContent=parts[1].trimEnd();disp.appendChild(sp);}
 
   const hb=document.createElement('span');
-  hb.className='hint-btn';hb.id='hint-btn';hb.textContent='?';
+  hb.className='hint-btn';hb.textContent='?';
   hb.onclick=function(){
     if(hb.classList.contains('open')){hb.textContent='?';hb.classList.remove('open');}
     else{hb.textContent=s.hint;hb.classList.add('open');}
@@ -355,7 +366,6 @@ document.getElementById('btn-see-forms').onclick=()=>showForms(true);
 document.getElementById('btn-retry').onclick=startGame;
 document.getElementById('btn-to-practice').onclick=()=>{hideForms();startGame()};
 document.getElementById('btn-again2').onclick=startGame;
-
 document.getElementById('btn-transl').onclick=function(){
   const s=cur[idx];if(!s)return;
   document.getElementById('transl-text').textContent=s.tr;
@@ -363,3 +373,5 @@ document.getElementById('btn-transl').onclick=function(){
   document.getElementById('btn-transl').style.display='none';
 };
 </script>
+</body>
+</html>
